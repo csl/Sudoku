@@ -215,6 +215,7 @@ public class SGraphicGrid extends JPanel implements SudokuQQ {
             	}
             }
             
+           	//System.out.println("keypressed " + PX + "," + PY + ", " + i);
             
             int oldVal = sgrid.getRealGridVal(PX, PY);
             if(isSelectedRightMouseBut) {
@@ -317,6 +318,17 @@ public class SGraphicGrid extends JPanel implements SudokuQQ {
         }
         lastCell = cells[0][0];
     }
+    
+    public void reqFocus()
+    {
+        for(int i = 0; i < 9; i++) {
+            for(int j = 0; j < 9; j++) {
+            	cells[j][i].requestFocus();
+            }
+        }
+    	
+    }
+    
     
     public void updateCellChange(int cell) {
         int xadr = GridGame.getX(cell);

@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -61,6 +62,8 @@ public class Sudoku extends JFrame implements SudokuQQ {
     private int wgame;
     private int lgame;
     
+    private ArrayList<SudokuRecord> rec;
+    
     //Event
     private ButtonHandlerUp button_down;
     
@@ -78,6 +81,7 @@ public class Sudoku extends JFrame implements SudokuQQ {
         sudGenerator = new Generator();
         sudGrid = sudGenerator.getGrid();
         uRS = new URStack(300);
+        rec = new ArrayList<SudokuRecord>();
         
         initGraphic();
         
@@ -156,13 +160,18 @@ public class Sudoku extends JFrame implements SudokuQQ {
         }
     }
     
-    private void doCheck() {
+    private void doCheck() 
+    {
+    	
+    	boolean win = false;
+    	
         if(sudGrid.isPuzzleSolved()) {
             JOptionPane.showMessageDialog(this, "Sudoku solved :)", "Success", 
                     JOptionPane.INFORMATION_MESSAGE);
             wgame++;
             setGridToFinished();
             guiGrid.repaint();
+            win = true;
         }   
         else 
         {
@@ -170,6 +179,10 @@ public class Sudoku extends JFrame implements SudokuQQ {
                     JOptionPane.INFORMATION_MESSAGE);
             lgame++;
         }
+        
+        //rec
+        SudokuRecord data = new SudokuRecord(sudGrid, 9, 9, win);
+        rec.add(data);
         
         showgame.setText("    Win GAME/Lose GAME: " + wgame + "/" + lgame);
     }
@@ -221,7 +234,37 @@ public class Sudoku extends JFrame implements SudokuQQ {
 			output.write( "Player Name: " + name + "\r\n\r\n");
 			output.write( "Win/Lose Record: " + "\r\n");
 			output.write( "Win: " + wgame + "\r\n");
-			output.write( "Lose: " + lgame + "\r\n");
+			output.write( "Lose: " + lgame + "\r\n\r\n");
+
+			//rec
+			output.write( "Battle record: " + "\r\n\r\n");
+			for (SudokuRecord item: rec)
+			{
+				int [][] temp = item.getGrid();
+				
+				if (item.getWin() == true)
+				{
+					output.write("game win:\r\n\r\n");					
+					
+				}
+				else
+				{
+					output.write("game lose:\r\n\r\n");			
+					
+				}
+				
+				for (int i=0; i<item.getX(); i++)
+				{
+					for (int j=0; j<item.getY(); j++)
+					{
+						output.write( temp[i][j] + " ");						
+					}					
+					output.write("\r\n\r\n");						
+				}
+				
+				output.write("\r\n\r\n");						
+				
+			}
 			output.close();			
 			
 			JOptionPane.showMessageDialog(this, "Save " + sFile.getName() + " OK!", "Save OK", 
@@ -302,10 +345,10 @@ public class Sudoku extends JFrame implements SudokuQQ {
                 if (tmp == Newgame) {
                 	doClear();
                     generateNewSud();
-                    guiGrid.hasFocus();
+                    guiGrid.reqFocus();
                 } else if(tmp == Checkgame) {
                 	doCheck();                     
-                    guiGrid.hasFocus();
+                    guiGrid.reqFocus();
                 } else if(tmp == SaveAs) 
                 {
                 	doSaveAs();

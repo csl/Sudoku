@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GridGame {
-    private int[][] grid;
+    public int[][] grid;
     
     private ArrayList<SudokuQQ> observers;
     private boolean hasChanged;
